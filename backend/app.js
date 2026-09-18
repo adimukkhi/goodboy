@@ -1,9 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import { askAI, friendlyError } from "./ai.js";
-import { SYSTEM_PROMPT, summaryPrompt } from "./prompts.js";
+import { SYSTEM_PROMPT, summaryPrompt, tutorSystemPrompt } from "./prompts.js";
 import { loadHistory, saveToHistory } from "./history.js";
 import { fileURLToPath } from "node:url";
+import { quizPrompt, QUIZ_SCHEMA } from "./prompts.js";
+import { streamAI } from "./ai.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -59,6 +61,10 @@ app.post("/api/summary", async (req, res) => {
 app.post("/api/quiz", async (req, res) => {
     const notes = readNotes(req, res);
     if (!notes) return;
+
+    const difficulty = ["easy", "medium", "hard"].includes(req.body.difficulty)
+    ? req.body.difficulty
+    : "medium";
 
     try {
         const json = await askAI({

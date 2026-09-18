@@ -17,7 +17,6 @@ export default function NotesInput({ notes, setNotes }) {
         placeholder="Paste your lecture notes here..."
         rows={18}
       />
-      /* Below the minimum, say what's missing instead of just counting. */
       <p className="hint">
         {notes.trim().length > 0 && notes.trim().length < MIN_NOTES
           ? `${MIN_NOTES - notes.trim().length} more characters before you can summarise`
